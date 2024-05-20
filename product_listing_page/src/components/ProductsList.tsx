@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Card } from "react-bootstrap";
 import { formatCurrency } from "../utilities/formatCurrency";
 import "../App.css";
-import { useShoppingCart } from "../context/shoppingCartContext";
+import { useBasket } from "../context/basketContext";
 
 type ProductsListProps = {
   productId: string;
@@ -24,7 +24,7 @@ export const ProductsList = ({
     incrementQuantity,
     decrementQuantity,
     removeFromCart,
-  } = useShoppingCart();
+  } = useBasket();
   const quantity = getItemQuantity(productId);
   return (
     <Card className="h-100">
@@ -61,7 +61,7 @@ export const ProductsList = ({
                 {" "}
                 <Button onClick={() => incrementQuantity(productId)}>+</Button>
                 <div>
-                  <span className="fs-3">{quantity}</span>in the basket
+                  <span className="fs-3">{quantity}</span>in Basket
                 </div>
                 <Button onClick={() => decrementQuantity(productId)}>-</Button>{" "}
               </div>

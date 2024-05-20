@@ -1,35 +1,35 @@
 import { ReactNode, createContext, useContext, useState } from "react";
 
-type ShoppingCartProviderProps = {
+type BasketProviderProps = {
   children: ReactNode;
 };
 
-type CartItem = {
+type basketItem = {
   id: string;
   quantity: number;
 };
 
-type ShoppingCartContext = {
+type BasketContext = {
   getItemQuantity: (id: string) => number;
   incrementQuantity: (id: string) => void;
   decrementQuantity: (id: string) => void;
   removeFromCart: (id: string) => void;
 };
 
-const ShoppingCartContext = createContext({} as ShoppingCartContext);
+const BasketContext = createContext({} as BasketContext);
 
-export function useShoppingCart() {
-  return useContext(ShoppingCartContext);
+export function useBasket() {
+  return useContext(BasketContext);
 }
 
-export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+export function BasketProvider({ children }: BasketProviderProps) {
+  const [Basket, setBasket] = useState<basketItem[]>([]);
 
   function getItemQuantity(id: string) {
-    return cartItems.find((item) => item.id === id)?.quantity || 0;
+    return Basket.find((item) => item.id === id)?.quantity || 0;
   }
   function incrementQuantity(id: string) {
-    setCartItems((currItems) => {
+    setBasket((currItems) => {
       if (currItems.find((item) => item.id === id) == null) {
         return [...currItems, { id, quantity: 1 }];
       } else {
@@ -44,7 +44,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     });
   }
   function decrementQuantity(id: string) {
-    setCartItems((currItems) => {
+    setBasket((currItems) => {
       if (currItems.find((item) => item.id === id)?.quantity === 1) {
         return currItems.filter((item) => {
           item.id !== id;
@@ -61,13 +61,13 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     });
   }
   function removeFromCart(id: string) {
-    setCartItems((currItems) => {
+    setBasket((currItems) => {
       return currItems.filter((item) => item.id !== id);
     });
   }
 
   return (
-    <ShoppingCartContext.Provider
+    <BasketContext.Provider
       value={{
         getItemQuantity,
         incrementQuantity,
@@ -76,6 +76,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       }}
     >
       {children}
-    </ShoppingCartContext.Provider>
+    </BasketContext.Provider>
   );
 }
