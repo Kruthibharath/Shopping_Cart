@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Card } from "react-bootstrap";
 import { formatCurrency } from "../utilities/formatCurrency";
 import "../App.css";
@@ -23,7 +22,7 @@ export const ProductsList = ({
     getItemQuantity,
     incrementQuantity,
     decrementQuantity,
-    removeFromCart,
+    removeFromBasket,
   } = useBasket();
   const quantity = getItemQuantity(productId);
   return (
@@ -68,7 +67,7 @@ export const ProductsList = ({
               <Button
                 variant="danger"
                 size="sm"
-                onClick={() => removeFromCart(productId)}
+                onClick={() => removeFromBasket(productId)}
               >
                 Remove
               </Button>

@@ -1,4 +1,6 @@
 import { ReactNode, createContext, useContext, useState } from "react";
+import { Basket } from "../components/basket";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type BasketProviderProps = {
   children: ReactNode;
@@ -10,10 +12,14 @@ type basketItem = {
 };
 
 type BasketContext = {
+  openBasket: () => void;
+  closeBasket: () => void;
   getItemQuantity: (id: string) => number;
   incrementQuantity: (id: string) => void;
   decrementQuantity: (id: string) => void;
-  removeFromCart: (id: string) => void;
+  removeFromBasket: (id: string) => void;
+  basketQuantity: number;
+  basketItems: basketItem[];
 };
 
 const BasketContext = createContext({} as BasketContext);
@@ -23,13 +29,25 @@ export function useBasket() {
 }
 
 export function BasketProvider({ children }: BasketProviderProps) {
-  const [Basket, setBasket] = useState<basketItem[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [basketItems, setBasketItems] = useLocalStorage<basketItem[]>(
+    "Basket",
+    []
+  );
+
+  const basketQuantity = basketItems.reduce(
+    (quantity, item) => item.quantity + quantity,
+    0
+  );
+
+  const openBasket = () => setIsOpen(true);
+  const closeBasket = () => setIsOpen(false);
 
   function getItemQuantity(id: string) {
-    return Basket.find((item) => item.id === id)?.quantity || 0;
+    return basketItems.find((item) => item.id === id)?.quantity || 0;
   }
   function incrementQuantity(id: string) {
-    setBasket((currItems) => {
+    setBasketItems((currItems) => {
       if (currItems.find((item) => item.id === id) == null) {
         return [...currItems, { id, quantity: 1 }];
       } else {
@@ -44,7 +62,7 @@ export function BasketProvider({ children }: BasketProviderProps) {
     });
   }
   function decrementQuantity(id: string) {
-    setBasket((currItems) => {
+    setBasketItems((currItems) => {
       if (currItems.find((item) => item.id === id)?.quantity === 1) {
         return currItems.filter((item) => {
           item.id !== id;
@@ -60,8 +78,8 @@ export function BasketProvider({ children }: BasketProviderProps) {
       }
     });
   }
-  function removeFromCart(id: string) {
-    setBasket((currItems) => {
+  function removeFromBasket(id: string) {
+    setBasketItems((currItems) => {
       return currItems.filter((item) => item.id !== id);
     });
   }
@@ -69,13 +87,18 @@ export function BasketProvider({ children }: BasketProviderProps) {
   return (
     <BasketContext.Provider
       value={{
+        openBasket,
+        closeBasket,
         getItemQuantity,
         incrementQuantity,
         decrementQuantity,
-        removeFromCart,
+        removeFromBasket,
+        basketItems,
+        basketQuantity,
       }}
     >
       {children}
+      <Basket isOpen={isOpen} />
     </BasketContext.Provider>
   );
 }

@@ -1,6 +1,8 @@
 import { Button, Container, Nav, Navbar as NavbarBs } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import { useBasket } from "../context/basketContext";
 export function Navbar() {
+  const { openBasket, basketQuantity } = useBasket();
   return (
     <NavbarBs className="bg-white shadow-sm mb-3">
       <Container className="me-auto">
@@ -15,7 +17,9 @@ export function Navbar() {
             Offers
           </Nav.Link>
         </Nav>
-        <Button>Your Basket(2 items)</Button>
+        {basketQuantity > 0 && (
+          <Button onClick={openBasket}>Your Basket({basketQuantity})</Button>
+        )}
       </Container>
     </NavbarBs>
   );

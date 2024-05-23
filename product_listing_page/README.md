@@ -37,3 +37,9 @@ select React+TypeScript for the framework
 npm cd Product_listing_pag
 npm install
 npm run dev
+
+Feel free to remove any unnecessary elements from this basic React + Vite boilerplate template as needed for your project.
+
+## Libraries
+
+npm i react-router-dom bootstrap react-bootstrap
